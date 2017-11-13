@@ -4643,18 +4643,6 @@ def CheckLanguage(filename, clean_lines, linenum, file_extension,
     #                (level 1 error)
     pass
 
-  # Check if people are using the verboten C basic types.  The only exception
-  # we regularly allow is "unsigned short port" for port.
-  if Search(r'\bshort port\b', line):
-    if not Search(r'\bunsigned short port\b', line):
-      error(filename, linenum, 'runtime/int', 4,
-            'Use "unsigned short" for ports, not "short"')
-  else:
-    match = Search(r'\b(short|long(?! +double)|long long)\b', line)
-    if match:
-      error(filename, linenum, 'runtime/int', 4,
-            'Use int16/int64/etc, rather than the C type %s' % match.group(1))
-
   # Check if some verboten operator overloading is going on
   # TODO(unknown): catch out-of-line unary operator&:
   #   class X {};
@@ -5751,10 +5739,7 @@ def FlagCxx11Features(filename, clean_lines, linenum, error):
                                       'fenv.h',
                                       'future',
                                       'mutex',
-                                      'thread',
-                                      'chrono',
                                       'ratio',
-                                      'regex',
                                       'system_error',
                                      ):
     error(filename, linenum, 'build/c++11', 5,
