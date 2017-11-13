@@ -2942,12 +2942,13 @@ def CheckSpacingForFunctionCall(filename, clean_lines, linenum, error):
         not Search(r'\bcase\s+\(', fncall)):
       # TODO(unknown): Space after an operator function seem to be a common
       # error, silence those for now by restricting them to highest verbosity.
-      if Search(r'\boperator_*\b', line):
-        error(filename, linenum, 'whitespace/parens', 0,
-              'Extra space before ( in function call')
-      else:
-        error(filename, linenum, 'whitespace/parens', 4,
-              'Extra space before ( in function call')
+      if not Search(r'(not\b|\band\b|\bor\b)\s*\(', line):
+          if Search(r'\boperator_*\b', line):
+            error(filename, linenum, 'whitespace/parens', 0,
+                  'Extra space before ( in function call')
+          else:
+            error(filename, linenum, 'whitespace/parens', 4,
+                  'Extra space before ( in function call')
     # If the ) is followed only by a newline or a { + newline, assume it's
     # part of a control statement (if/while/etc), and don't complain
     if Search(r'[^)]\s+\)\s*[^{\s]', fncall):
