@@ -3676,11 +3676,10 @@ def CheckBraces(filename, clean_lines, linenum, error):
       error(filename, linenum, 'whitespace/braces', 4,
             '{ for a class should start a new line')
 
-  # the { for if, do, while, for, etc. should stay at the same line
-  if Match(r'\s*(if\b|while\b|for\b|switch\b|do\b)', line):
-     if not Search(r'{\s*$', line):
-         error(filename, linenum, 'whitespace/braces', 4,
-               '{ for "if/while/for/switch/do" should be at the same line')
+  # the { for if, while, for, etc. should stay at the same line
+  if Match(r'\s*(if |while |for |switch )\(.*\)$', line):
+     error(filename, linenum, 'whitespace/braces', 4,
+           '{ for "if/while/for/switch" should be at the same line')
   else:
       # the { for a function should start a new line
       starting_func = False
