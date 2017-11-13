@@ -3701,7 +3701,7 @@ def CheckBraces(filename, clean_lines, linenum, error):
   line = clean_lines.elided[linenum]        # get rid of comments and strings
 
   # the { for a class should start a new line
-  if Search(r'\s*class.*{\s*$', line):
+  if Search(r'\s*class.*{\s*$', line) and not Search(r'enum', line):
       error(filename, linenum, 'whitespace/braces', 4,
             '{ for a class should start a new line')
 
