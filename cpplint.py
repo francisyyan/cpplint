@@ -2914,6 +2914,18 @@ def CheckSpacingForFunctionCall(filename, clean_lines, linenum, error):
     elif Search(r'\(\s+(?!(\s*\\)|\()', fncall):
       error(filename, linenum, 'whitespace/parens', 2,
             'Extra space after (')
+
+    # check indent when the parameter list consumes multiple lines
+    if (Search(r'\w+\(', fncall) and
+        not Search(r'\w+\($', fncall) and
+        not Search(r'\w+\(.*\)', fncall)):
+        best_indent = fncall.index('(') + 1
+        next_line = clean_lines.elided[linenum + 1]
+        next_indent = GetIndentLevel(next_line)
+        if best_indent != next_indent:
+              error(filename, linenum + 1, 'whitespace/parens', 2,
+                    'align multi-line parameters of function')
+
     if (Search(r'\w\s+\(', fncall) and
         not Search(r'_{0,2}asm_{0,2}\s+_{0,2}volatile_{0,2}\s+\(', fncall) and
         not Search(r'#\s*define|typedef|using\s+\w+\s*=', fncall) and
