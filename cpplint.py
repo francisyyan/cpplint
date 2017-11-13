@@ -2918,7 +2918,8 @@ def CheckSpacingForFunctionCall(filename, clean_lines, linenum, error):
     # check indent when the parameter list consumes multiple lines
     if (Search(r'\w+\(', fncall) and
         not Search(r'\w+\($', fncall) and
-        not Search(r'\w+\(.*\)', fncall)):
+        not Search(r'\w+\(.*\)', fncall) and
+        not Search(r'\w+\(\s*\w+\(', fncall)):
         best_indent = fncall.index('(') + 1
         next_line = clean_lines.elided[linenum + 1]
         next_indent = GetIndentLevel(next_line)
@@ -3103,7 +3104,8 @@ def CheckComment(line, filename, linenum, next_line_start, error):
       # should be a space somewhere between it and the // unless
       # it's a /// or //! Doxygen comment.
       if (Match(r'//[^ ]*\w', comment) and
-          not Match(r'(///|//\!)(\s+|$)', comment)):
+          not Match(r'(///|//\!)(\s+|$)', comment) and
+          not Match(r'http', comment)):
         error(filename, linenum, 'whitespace/comments', 4,
               'Should have a space between // and comment')
 
