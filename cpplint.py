@@ -3352,6 +3352,15 @@ def CheckOperatorSpacing(filename, clean_lines, linenum, error):
     error(filename, linenum, 'whitespace/operators', 4,
           'Extra space for operator %s' % match.group(1))
 
+  # extra checks for spacing in switch
+  if Search(r'default\s+:', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Extra space before :')
+
+  if Search(r'case .*\s+:', line):
+    error(filename, linenum, 'whitespace/operators', 4,
+          'Extra space before :')
+
 
 def CheckParenthesisSpacing(filename, clean_lines, linenum, error):
   """Checks for horizontal spacing around parentheses.
