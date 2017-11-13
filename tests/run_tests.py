@@ -22,7 +22,7 @@ def main():
         'cpplint.py')
 
     assert_errors(output([cpplint, 'good_braces.cc']), 0)
-    assert_errors(output([cpplint, 'bad_braces.cc']), 7)
+    assert_errors(output([cpplint, 'bad_braces.cc']), 6)
 
 
 if __name__ == '__main__':
