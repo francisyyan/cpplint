@@ -17,12 +17,11 @@ def assert_errors(output, errors_expected):
 
 
 def main():
-    cpplint = path.join(
-        path.join(path.dirname(path.abspath(__file__)), os.pardir),
-        'cpplint.py')
+    cwd = path.join(path.dirname(path.abspath(__file__)))
+    cpplint = path.join(cwd, os.pardir, 'cpplint.py')
 
-    assert_errors(output([cpplint, 'good_braces.cc']), 0)
-    assert_errors(output([cpplint, 'bad_braces.cc']), 6)
+    assert_errors(output([cpplint, path.join(cwd, 'good_braces.cc')]), 0)
+    assert_errors(output([cpplint, path.join(cwd, 'bad_braces.cc')]), 6)
 
 
 if __name__ == '__main__':

@@ -2367,7 +2367,7 @@ class _NamespaceInfo(_BlockInfo):
                     re.escape(self.name) + r'[\*/\.\\\s]*$'),
                    line):
         error(filename, linenum, 'readability/namespace', 5,
-              'Namespace should be terminated with "// namespace %s"' %
+              'Namespace should be terminated with "/* namespace %s*/"' %
               self.name)
     else:
       # Anonymous namespace
@@ -2923,9 +2923,12 @@ def CheckSpacingForFunctionCall(filename, clean_lines, linenum, error):
         best_indent = fncall.index('(') + 1
         next_line = clean_lines.elided[linenum + 1]
         next_indent = GetIndentLevel(next_line)
-        if best_indent != next_indent:
-              error(filename, linenum + 1, 'whitespace/parens', 2,
-                    'align multi-line parameters of function')
+
+        # special cases: lambda functions
+        if not Search(r'\[.*\]\s*', next_line):
+            if best_indent != next_indent:
+                  error(filename, linenum + 1, 'whitespace/parens', 2,
+                        'align multi-line parameters of function')
 
     # check initialization list
     if Search(r'\w+\(.*\)\s*:', fncall):
@@ -3697,12 +3700,12 @@ def CheckBraces(filename, clean_lines, linenum, error):
   line = clean_lines.elided[linenum]        # get rid of comments and strings
 
   # the { for a class should start a new line
-  if Match(r'\s*class.*{\s*$', line):
+  if Search(r'\s*class.*{\s*$', line):
       error(filename, linenum, 'whitespace/braces', 4,
             '{ for a class should start a new line')
 
   # check { for if, while, for, etc.
-  if Match(r'\s*(if |while |for |switch )\(.*\)$', line):
+  if Search(r'\b(if|while|for|switch)\b\s*\(.*\)$', line):
       next_line = clean_lines.elided[linenum + 1]
       if not Search(r'{', next_line):
           error(filename, linenum, 'whitespace/braces', 4,
