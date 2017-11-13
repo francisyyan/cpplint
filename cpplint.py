@@ -4253,11 +4253,6 @@ def CheckAltTokens(filename, clean_lines, linenum, error):
   if Match(r'^\s*#', line):
     return
 
-  for match in _ALT_TOKEN_REPLACEMENT_PATTERN.finditer(line):
-    error(filename, linenum, 'readability/alt_tokens', 2,
-          'Use operator %s instead of %s' % (
-              _ALT_TOKEN_REPLACEMENT[match.group(1)], match.group(1)))
-
 
 def GetLineWidth(line):
   """Determines the width of the line in column positions.
