@@ -2926,6 +2926,11 @@ def CheckSpacingForFunctionCall(filename, clean_lines, linenum, error):
               error(filename, linenum + 1, 'whitespace/parens', 2,
                     'align multi-line parameters of function')
 
+    # check initialization list
+    if Search(r'\w+\(.*\)\s*:', fncall):
+      error(filename, linenum, 'whitespace/parens', 2,
+            'initialization list should start at a new line')
+
     if (Search(r'\w\s+\(', fncall) and
         not Search(r'_{0,2}asm_{0,2}\s+_{0,2}volatile_{0,2}\s+\(', fncall) and
         not Search(r'#\s*define|typedef|using\s+\w+\s*=', fncall) and
@@ -3685,10 +3690,15 @@ def CheckBraces(filename, clean_lines, linenum, error):
       error(filename, linenum, 'whitespace/braces', 4,
             '{ for a class should start a new line')
 
-  # the { for if, while, for, etc. should stay at the same line
+  # check { for if, while, for, etc.
   if Match(r'\s*(if |while |for |switch )\(.*\)$', line):
-     error(filename, linenum, 'whitespace/braces', 4,
-           '{ for "if/while/for/switch" should be at the same line')
+      next_line = clean_lines.elided[linenum + 1]
+      if not Search(r'{', next_line):
+          error(filename, linenum, 'whitespace/braces', 4,
+               '{ is always required for "if/while/for/switch"')
+      else:
+          error(filename, linenum, 'whitespace/braces', 4,
+               '{ for "if/while/for/switch" should be at the same line')
   else:
       # the { for a function should start a new line
       starting_func = False
