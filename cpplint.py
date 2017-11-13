@@ -3671,9 +3671,33 @@ def CheckBraces(filename, clean_lines, linenum, error):
 
   line = clean_lines.elided[linenum]        # get rid of comments and strings
 
+  # the { for a class should start a new line
   if Match(r'\s*class.*{\s*$', line):
       error(filename, linenum, 'whitespace/braces', 4,
             '{ for a class should start a new line')
+
+  # the { for if, do, while, for, etc. should stay at the same line
+  if Match(r'\s*(if\b|while\b|for\b|switch\b|do\b)', line):
+     if not Search(r'{\s*$', line):
+         error(filename, linenum, 'whitespace/braces', 4,
+               '{ for "if/while/for/switch/do" should be at the same line')
+  else:
+      # the { for a function should start a new line
+      starting_func = False
+      regexp = r'(\w(\w|::|\*|\&|\s)*)\('  # decls * & space::name( ...
+      match_result = Match(regexp, line)
+      if match_result:
+        # If the name is all caps and underscores, figure it's a macro and
+        # ignore it, unless it's TEST or TEST_F.
+        function_name = match_result.group(1).split()[-1]
+        if function_name == 'TEST' or function_name == 'TEST_F' or (
+            not Match(r'[A-Z_]+$', function_name)):
+          starting_func = True
+
+      if starting_func:
+          if Search(r'{\s*$', line):
+             error(filename, linenum, 'whitespace/braces', 4,
+                   '{ for a function should start a new line')
 
   # An else clause should be on the same line as the preceding closing brace.
   if Match(r'\s*else\b\s*(?:if\b|\{|$)', line):
