@@ -4341,6 +4341,11 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, nesting_state,
     error(filename, linenum, 'whitespace/newline', 0,
           'More than one command on the same line')
 
+  # check NULL
+  if Search(r'NULL', line):
+    error(filename, linenum, 'readability/null', 2,
+          'use nullptr instead of NULL')
+
   # Some more style checks
   CheckBraces(filename, clean_lines, linenum, error)
   CheckTrailingSemicolon(filename, clean_lines, linenum, error)
